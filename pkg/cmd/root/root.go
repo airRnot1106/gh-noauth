@@ -14,7 +14,7 @@ import (
 	"github.com/cli/cli/v2/pkg/cmd/alias/shared"
 	apiCmd "github.com/cli/cli/v2/pkg/cmd/api"
 	attestationCmd "github.com/cli/cli/v2/pkg/cmd/attestation"
-	authCmd "github.com/cli/cli/v2/pkg/cmd/auth"
+	authCmd "github.com/cli/cli/v2/pkg/cmd/authstub"
 	browseCmd "github.com/cli/cli/v2/pkg/cmd/browse"
 	cacheCmd "github.com/cli/cli/v2/pkg/cmd/cache"
 	codespaceCmd "github.com/cli/cli/v2/pkg/cmd/codespace"
