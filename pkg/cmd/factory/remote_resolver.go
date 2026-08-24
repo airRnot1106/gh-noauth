@@ -87,7 +87,7 @@ func (rr *remoteResolver) Resolver() func() (context.Remotes, error) {
 				rr.remotesError = errors.New("set the GH_HOST environment variable to specify which GitHub host to use")
 				return nil, rr.remotesError
 			}
-			rr.remotesError = errors.New("none of the git remotes configured for this repository point to a known GitHub host. To tell gh about a new GitHub host, please use `gh auth login`")
+			rr.remotesError = errors.New("none of the git remotes configured for this repository point to a known GitHub host. Auth command has been disabled in this build; populate the GH_TOKEN environment variable for the desired host instead")
 			return nil, rr.remotesError
 		}
 

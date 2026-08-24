@@ -77,7 +77,7 @@ func requireOAuthToken(f *cmdutil.Factory) error {
 	authCfg := cfg.Authentication()
 	host, _ := authCfg.DefaultHost()
 	if host == "" {
-		return errors.New("no default host configured; run 'gh auth login'")
+		return errors.New("no default host configured; populate the GH_TOKEN environment variable with a GitHub API authentication token")
 	}
 
 	if auth.IsEnterprise(host) {
@@ -97,7 +97,7 @@ func requireOAuthToken(f *cmdutil.Factory) error {
 
 	// Reject if the token is not from a device flow source or is not an OAuth token
 	if !tokenSourceIsDeviceFlow || !tokenIsOAuth {
-		return fmt.Errorf("this command requires an OAuth token. Re-authenticate with: gh auth login")
+		return fmt.Errorf("this command requires an OAuth token, but auth command has been disabled in this build")
 	}
 	return nil
 }
