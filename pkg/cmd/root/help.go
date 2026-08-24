@@ -223,8 +223,8 @@ func authHelp() string {
 	}
 
 	return heredoc.Doc(`
-		To get started with GitHub CLI, please run:  gh auth login
-		Alternatively, populate the GH_TOKEN environment variable with a GitHub API authentication token.
+		gh: Auth command has been disabled in this build. To use GitHub CLI, populate the GH_TOKEN
+		environment variable with a GitHub API authentication token.
 	`)
 }
 

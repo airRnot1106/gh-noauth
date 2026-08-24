@@ -85,7 +85,7 @@ func NewCmdRoot(f *cmdutil.Factory, telemetry ghtelemetry.CommandRecorder, versi
 			if cmdutil.IsAuthCheckEnabled(cmd) && !cmdutil.CheckAuth(cfg) {
 				parent := cmd.Parent()
 				if parent != nil && parent.Use == "codespace" {
-					fmt.Fprintln(io.ErrOut, "To get started with GitHub CLI, please run:  gh auth login -s codespace")
+					fmt.Fprintln(io.ErrOut, "Auth command has been disabled in this build. To use GitHub CLI, populate the GH_TOKEN environment variable with a GitHub API authentication token.")
 				} else {
 					fmt.Fprint(io.ErrOut, authHelp())
 				}

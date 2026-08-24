@@ -5,17 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"net/url"
 	"os"
 	"testing"
 
-	"github.com/cli/cli/v2/api"
 	"github.com/cli/cli/v2/internal/agents"
 	"github.com/cli/cli/v2/internal/config"
 	"github.com/cli/cli/v2/internal/gh"
-	ghmock "github.com/cli/cli/v2/internal/gh/mock"
 	"github.com/cli/cli/v2/pkg/cmdutil"
-	ghAPI "github.com/cli/go-gh/v2/pkg/api"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -545,75 +541,4 @@ func disableColorLabelsConfig() gh.Config {
 
 func enableColorLabelsConfig() gh.Config {
 	return config.NewMockConfigFromString("color_labels: enabled")
-}
-
-func Test_authRecoveryCommand(t *testing.T) {
-	tests := []struct {
-		name       string
-		token      string
-		source     string
-		requestURL string
-		want       string
-	}{
-		{
-			name:       "stored oauth token",
-			token:      "gho_abc123",
-			source:     "oauth_token",
-			requestURL: "https://api.github.com/graphql",
-			want:       "gh auth refresh -h github.com",
-		},
-		{
-			name:       "stored pat",
-			token:      "github_pat_abc123",
-			source:     "oauth_token",
-			requestURL: "https://api.github.com/graphql",
-			want:       "gh auth login -h github.com",
-		},
-		{
-			name:       "env token",
-			token:      "gho_abc123",
-			source:     "GH_TOKEN",
-			requestURL: "https://api.github.com/graphql",
-			want:       "gh auth login -h github.com",
-		},
-		{
-			name:   "missing request url",
-			token:  "gho_abc123",
-			source: "oauth_token",
-			want:   "gh auth login",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			authCfg := config.NewMockConfig().Authentication()
-			authCfg.SetActiveToken(tt.token, tt.source)
-			cfg := &ghmock.ConfigMock{
-				AuthenticationFunc: func() gh.AuthConfig {
-					return authCfg
-				},
-			}
-
-			var requestURL *url.URL
-			if tt.requestURL != "" {
-				var err error
-				requestURL, err = url.Parse(tt.requestURL)
-				if err != nil {
-					t.Fatalf("failed to parse request URL: %v", err)
-				}
-			}
-
-			httpErr := api.HTTPError{
-				HTTPError: &ghAPI.HTTPError{
-					RequestURL: requestURL,
-					StatusCode: 401,
-				},
-			}
-
-			got := authRecoveryCommand(cfg, httpErr)
-			if got != tt.want {
-				t.Errorf("authRecoveryCommand() = %q, want %q", got, tt.want)
-			}
-		})
-	}
 }

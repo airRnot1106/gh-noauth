@@ -26,7 +26,6 @@ import (
 	"github.com/cli/cli/v2/internal/gh/ghtelemetry"
 	"github.com/cli/cli/v2/internal/telemetry"
 	"github.com/cli/cli/v2/internal/update"
-	"github.com/cli/cli/v2/pkg/cmd/auth/shared"
 	"github.com/cli/cli/v2/pkg/cmd/factory"
 	"github.com/cli/cli/v2/pkg/cmd/root"
 	"github.com/cli/cli/v2/pkg/cmdutil"
@@ -233,11 +232,7 @@ func Main() exitCode {
 
 		var httpErr api.HTTPError
 		if errors.As(err, &httpErr) && httpErr.StatusCode == 401 {
-			authCommand := "gh auth login"
-			if cfg, cfgErr := cmdFactory.Config(); cfgErr == nil {
-				authCommand = authRecoveryCommand(cfg, httpErr)
-			}
-			fmt.Fprintf(stderr, "Try authenticating with:  %s\n", authCommand)
+			fmt.Fprintln(stderr, "Auth command has been disabled in this build. Populate the GH_TOKEN environment variable with a GitHub API authentication token.")
 		} else if u := factory.SSOURL(); u != "" {
 			// handles organization SAML enforcement error
 			fmt.Fprintf(stderr, "Authorize in your web browser:  %s\n", u)
@@ -299,20 +294,6 @@ func printError(out io.Writer, err error, cmd *cobra.Command, debug bool) {
 		}
 		fmt.Fprintln(out, cmd.UsageString())
 	}
-}
-
-func authRecoveryCommand(cfg gh.Config, httpErr api.HTTPError) string {
-	if httpErr.RequestURL == nil {
-		return "gh auth login"
-	}
-
-	hostname := ghauth.NormalizeHostname(httpErr.RequestURL.Hostname())
-	token, source := cfg.Authentication().ActiveToken(hostname)
-	if shared.AuthTokenRefreshable(token, source) {
-		return fmt.Sprintf("gh auth refresh -h %s", hostname)
-	}
-
-	return fmt.Sprintf("gh auth login -h %s", hostname)
 }
 
 func checkForUpdate(ctx context.Context, f *cmdutil.Factory, currentVersion string) (*update.ReleaseInfo, error) {
