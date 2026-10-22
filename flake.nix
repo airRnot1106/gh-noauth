@@ -18,7 +18,7 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
-        packages.default = pkgs.buildGoModule (finalAttrs: {
+        packages.default = pkgs.buildGo127Module (finalAttrs: {
           pname = "gh-noauth";
           version = self.shortRev or self.dirtyShortRev or "unknown";
 
@@ -26,7 +26,7 @@
 
           src = ./.;
 
-          vendorHash = "sha256-bVc4dhDapAp1YtO06C/nSrdxllpEhVFC2iZNPmjsJkI=";
+          vendorHash = "sha256-IKlIrDYcjJZbcnZZDnYjV4gR7VvyztVEMJh4w+Fi5FQ=";
 
           nativeBuildInputs = [
             pkgs.installShellFiles
@@ -83,7 +83,7 @@
 
         devShells.default = pkgs.mkShell {
           packages = [
-            pkgs.go
+            pkgs.go_1_27
             pkgs.gopls
             pkgs.gotools
             pkgs.golangci-lint
